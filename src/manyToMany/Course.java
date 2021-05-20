@@ -1,6 +1,4 @@
-package oneToManyUni;
-
-
+package manyToMany;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -17,13 +15,11 @@ public class Course {
     @Column(name = "title")
     private String title;
 
-    @ManyToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-    @JoinColumn(name = "teacher_id")
-    private Teacher teacher;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "course_id")
-    private List<Review> reviews;
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH} )
+    @JoinTable(name = "course_student", joinColumns = @JoinColumn(name = "course_id"), inverseJoinColumns = @JoinColumn(name = "student_id"))
+    private List<Student> students;
 
     public Course() {
     }
@@ -48,27 +44,20 @@ public class Course {
         this.title = title;
     }
 
-    public Teacher getTeacher() {
-        return teacher;
+
+    public List<Student> getStudents() {
+        return students;
     }
 
-    public void setTeacher(Teacher teacher) {
-        this.teacher = teacher;
+    public void setStudents(List<Student> students) {
+        this.students = students;
     }
 
-    public List<Review> getReviews() {
-        return reviews;
-    }
-
-    public void setReviews(List<Review> reviews) {
-        this.reviews = reviews;
-    }
-
-    public void addReview(Review review) {
-        if(reviews == null) {
-            reviews = new ArrayList<>();
+    public void addStudent(Student student){
+        if(students == null) {
+            students = new ArrayList<>();
         }
-        reviews.add(review);
+        students.add(student);
     }
 
     @Override
